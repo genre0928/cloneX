@@ -61,7 +61,7 @@ export default function PostTweetForm() {
   const [isLoading, setLoading] = useState(false);
   const [tweet, setTweet] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [fileSize, setFileSize] = useState<String | null>(null);
+  const [fileSize, setFileSize] = useState<Number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -69,16 +69,17 @@ export default function PostTweetForm() {
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0].size;
-    if (selectedFile > 1048576) {
-      if (inputRef.current) {
-        inputRef.current.value = "";
-      }
-      alert("이미지는 1MB 이하만 첨부할 수 있습니다.");
-      return;
-    }
     const { files } = e.target;
     if (files && files.length === 1) {
+      const selectedFile = files[0].size;
+      if (selectedFile > 1048576) {
+        if (inputRef.current) {
+          inputRef.current.value = "";
+          setFileSize(null);
+        }
+        alert("이미지는 1MB 이하만 첨부할 수 있습니다.");
+        return;
+      }
       setFile(files[0]);
       setFileSize(selectedFile);
     }
