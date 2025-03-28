@@ -108,6 +108,7 @@ export default function Layout() {
           </svg>
         </MenuItem>
       </Menu>
+      <Outlet />
     </Wrapper>
   );
 }

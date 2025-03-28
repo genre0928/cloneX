@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-// import { getAuth } from "firebase/auth/cordova";
+import { getStorage } from "firebase/storage";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCe7CBF19eNOPTIy3UFmR02kACu1OPcPFQ",
@@ -15,4 +16,8 @@ const app = initializeApp(firebaseConfig);
 
 // 인증을 위한 추가 코드
 // export const auth = getAuth(app)
-export const auth = getAuth(app)
+export const auth = getAuth(app);
+
+export const storage = getStorage(app);
+
+export const db = getFirestore(app);

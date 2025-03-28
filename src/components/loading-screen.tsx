@@ -4,7 +4,7 @@ const Wrapper = styled.div`
   height: 100vh;
   display: flex;
   justify-content: center;
-  aligh-items: center;
+  align-items: center;
 `;
 
 const Text = styled.span`

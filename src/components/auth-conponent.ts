@@ -19,12 +19,12 @@ export const Form = styled.form`
 export const Input = styled.input`
   padding: 10px 20px;
   border-radius: 50px;
-  border: nome;
+  border: none;
   width: 100%;
   font-size: 16px;
   &[type="submit"] {
     cursor: pointer;
-    $:hover {
+    &:hover {
       opacity: 0.8;
     }
   }
