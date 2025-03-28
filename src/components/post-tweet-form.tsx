@@ -1,5 +1,5 @@
 import { addDoc, collection, updateDoc } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { auth, db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -61,15 +61,26 @@ export default function PostTweetForm() {
   const [isLoading, setLoading] = useState(false);
   const [tweet, setTweet] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [fileSize, setFileSize] = useState<String | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTweet(e.target.value);
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0].size;
+    if (selectedFile > 1048576) {
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+      alert("이미지는 1MB 이하만 첨부할 수 있습니다.");
+      return;
+    }
     const { files } = e.target;
     if (files && files.length === 1) {
       setFile(files[0]);
+      setFileSize(selectedFile);
     }
   };
 
@@ -96,8 +107,8 @@ export default function PostTweetForm() {
           photo: url,
         });
       }
-      setTweet("")
-      setFile(null)
+      setTweet("");
+      setFile(null);
     } catch (e) {
       console.log(e);
     } finally {
@@ -115,10 +126,11 @@ export default function PostTweetForm() {
         required
       />
       <AttachFileButton htmlFor="file">
-        {file ? "첨부 완료" : "사진 추가"}
+        {file ? `첨부 완료 | 사진 크기 : ${fileSize} Byte` : "사진 추가"}
       </AttachFileButton>
       <AttachFileInput
         onChange={onFileChange}
+        ref={inputRef}
         type="file"
         id="file"
         accept="image/*"
