@@ -4,7 +4,7 @@ import { getRelativeTime } from "./getrelativetime";
 import { auth, db, storage } from "../firebase";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const Wrapper = styled.div`
   display: grid;
@@ -121,6 +121,11 @@ export default function Tweet({
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [fileSize, setFileSize] = useState<Number | null>(null);
+  const [localTweet, setLocalTweet] = useState(tweet);
+
+  useEffect(() => {
+    setLocalTweet(isEditTweet);
+  }, [tweet]);
 
   // edit 버튼 -> textarea 변경 후 수정값은 tweet 저장
   const onEditTweet = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -170,6 +175,7 @@ export default function Tweet({
     } finally {
       setLoading(false);
       setEdit(false);
+      setLocalTweet(isEditTweet);
     }
   };
 
@@ -195,9 +201,12 @@ export default function Tweet({
       <Column>
         <Username>{username}</Username>
         {isEdit ? (
-          <EditPayload onChange={onEditTweet}>{tweet}</EditPayload>
+          <EditPayload
+            value={isEditTweet ? isEditTweet : tweet}
+            onChange={onEditTweet}
+          ></EditPayload>
         ) : (
-          <Payload>{tweet}</Payload>
+          <Payload>{localTweet}</Payload>
         )}
         <Time>{diffTime}</Time>
         {user?.uid === userId && !isEdit ? (
